@@ -1,55 +1,60 @@
 .container {
-    height: 100vh;
-    width: 50vw;
-    padding: 10vw;
-    box-sizing: border-box;
-    display: inline-flex;
-    flex-direction: column;
-  }
-  .h1 {
-    font-size: 32px;
-    margin-bottom: 16px;
-    font-weight: 900;
-  }
-  .h2 {
-    font-size: 16px;
-    margin-bottom: 16px;
-    font-weight: 500;
-  }
-  .input {
-    padding: 8px;
-    border-radius: 6px;
-    border: none;
-    margin: 12px 0px;
-    height: 18px;
-    border: 2px solid #c2c2c2;
-    box-shadow: 0px 0px 0px 4px rgba(255, 255, 255, 0.01);
-  }
-  .button {
-    width: 274px;
-    height: 38px;
-    flex-shrink: 0;
-    color: #474444;
-    font-family: Poppins;
-    font-size: 20px;
-    font-style: normal;
-    font-weight: 600;
-    line-height: normal;
-    border-radius: 8px;
-    background: #a9bcff;
-  }
-  .button:hover {
-    font-weight: 700;
-    background: #fff;
-    color: #ff6b6b;
-    border: 3px solid #ff6b6b;
-  }
-  
-  /* .footer{} */
-  .underline {
-    margin: 4px;
-    font-weight: 700;
-    text-decoration: underline;
-    cursor: pointer;
-  }
-  
+  height: 100vh;
+  width: 60vw;
+  padding: 10vw;
+  box-sizing: border-box;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+.name{
+  margin-top: -8rem;
+}
+.label {
+  color: #474444;
+  text-align: right;
+  font-family: Poppins;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  margin-right: 30px;
+}
+.input {
+  width: 388px;
+  height: 38px;
+  flex-shrink: 0;
+  border-radius: 10px 10px 0px 0px;
+  background: #f4f4f4;
+  border: none;
+  margin-top: 30px;
+}
+.button {
+  width: 274px;
+  height: 38px;
+  flex-shrink: 0;
+  color: #474444;
+  font-family: Poppins;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  border-radius: 8px;
+  background: #a9bcff;
+  border: none;
+  margin: 2rem 6rem 0rem 0rem;
+}
+.button:hover {
+  font-weight: 700;
+  background: #fff;
+  color: #ff6b6b;
+  border: 3px solid #ff6b6b;
+}
+
+/* .footer{} */
+.underline {
+  margin: 4px;
+  font-weight: 700;
+  text-decoration: underline;
+  cursor: pointer;
+}

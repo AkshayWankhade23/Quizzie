@@ -43,7 +43,7 @@ const LoginForm = () => {
       window.localStorage.setItem("name", responseData.name);
       window.localStorage.setItem("token", responseData.token);
       toast.success("Login successful!");
-      navigate("/");
+      navigate("/Dashboard");
     } catch (error) {
       console.error(error);
       toast.error("There was a problem with the request, please try again");
@@ -54,6 +54,7 @@ const LoginForm = () => {
 
   return (
     <div className={style.container}>
+
       <div className={style.email}>
       <label className={style.label}>Email</label>
       <input
@@ -76,10 +77,12 @@ const LoginForm = () => {
         type="password"
         placeholder="Password"
       />
+      </div>
+
       <button onClick={handleSubmit} className={style.button} disabled={isLoading}>
         {isLoading ? "Logging in..." : "Log In"}
       </button>
-      </div>
+      
       
     </div>
   );

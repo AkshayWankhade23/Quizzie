@@ -57,6 +57,7 @@ router.post("/register", async (req, res) => {
     });
   } catch (error) {
     // Handle errors using a centralized error handler
+    console.error(error);
     errorHandler(res, error);
   }
 });

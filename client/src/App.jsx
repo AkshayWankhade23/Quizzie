@@ -1,9 +1,10 @@
 import { Routes, Route } from "react-router-dom";
 import './App.css';
-import SignUp from "./Pages/SignUp/SignUp";
+import SignUp from "./Pages/SignUp/SignUp"
+import Dashboard from "./Components/Dashboard/Dashboard";
 import { Toaster } from "react-hot-toast";
 
-export const server = "https://joblisting-server.onrender.com";
+export const server = "http://localhost:4000";
 
 function App() {
   return (
@@ -11,6 +12,7 @@ function App() {
       <Toaster position="top-center" toastOptions={{ duration: 2000 }} />
       <Routes>
         <Route path="/" element={<SignUp />} />
+        <Route path="/Dashboard" element={<Dashboard />} />
       </Routes>
     </>
   );
