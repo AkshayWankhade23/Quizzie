@@ -33,7 +33,7 @@ const SignUpForm = () => {
 
     // Send the POST Request
     try {
-      const response = await fetch(`${server}/api/auth/register`, {
+      const response = await fetch(`${server}/api/user/signup`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

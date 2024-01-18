@@ -7,6 +7,7 @@ dotenv.config();
 
 //Important Routes
 const authRoutes = require("./routes/auth");
+const quizRoutes = require("./routes/quiz");
 
 const app = express();
 
@@ -18,8 +19,15 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // Register Route
-app.use("/api/auth", authRoutes); 
-// app.use("/api/job", jobRoutes);
+app.use("/api/user", authRoutes); 
+app.use("/api/quiz", quizRoutes);
+
+app.get('/api/quiz/quizzes', (req, res) => {
+  const quizTypes = ['Q&A', 'Poll']; // Example data
+  console.log("Quiz Types sent in response:", quizTypes);
+  res.json(quizTypes);
+});
+
 app.get("/", async (req, res) => {
   res.status(200).json({
     message: "Server is up and running",
