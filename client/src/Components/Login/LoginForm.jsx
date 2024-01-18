@@ -42,6 +42,9 @@ const LoginForm = () => {
       window.localStorage.setItem("user", responseData.user);
       window.localStorage.setItem("name", responseData.name);
       window.localStorage.setItem("token", responseData.token);
+
+      console.log(localStorage.getItem("token"));
+      
       toast.success("Login successful!");
       navigate("/Dashboard");
     } catch (error) {
@@ -63,7 +66,6 @@ const LoginForm = () => {
         value={data.email}
         onChange={handleChange}
         type="email"
-        placeholder="Email"
       />
       </div>
       
@@ -75,7 +77,6 @@ const LoginForm = () => {
         value={data.password}
         onChange={handleChange}
         type="password"
-        placeholder="Password"
       />
       </div>
 

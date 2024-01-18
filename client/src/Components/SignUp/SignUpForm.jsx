@@ -51,6 +51,10 @@ const SignUpForm = () => {
       window.localStorage.setItem("user", responseData.user.email);
       window.localStorage.setItem("name", responseData.user.name);
       window.localStorage.setItem("token", responseData.token);
+
+      console.log(localStorage);
+      console.log(localStorage.getItem("token"));
+      
       toast.success("Registration successful!");
       navigate("/Dashboard")
     } catch (error) {
@@ -68,7 +72,6 @@ const SignUpForm = () => {
           value={data.name}
           onChange={handleChange}
           type={"text"}
-          placeholder="Name"
         />
       </div>
 
@@ -80,7 +83,6 @@ const SignUpForm = () => {
           value={data.email}
           onChange={handleChange}
           type={"email"}
-          placeholder="Email"
         />
       </div>
 
@@ -92,7 +94,6 @@ const SignUpForm = () => {
           value={data.password}
           onChange={handleChange}
           type={"password"}
-          placeholder="Password"
         />
       </div>
 
@@ -104,7 +105,6 @@ const SignUpForm = () => {
           value={data.confirmPassword}
           onChange={handleChange}
           type={"password"}
-          placeholder="Confirm Password"
         />
       </div>
 

@@ -1,0 +1,96 @@
+/* .container {
+    width: 100vw;
+  background: #ededed;
+}
+
+.cards{
+    display: flex;
+}
+
+.quiz_created {
+  width: 295px;
+  height: 145px;
+  flex-shrink: 0;
+  border-radius: 10px;
+  background: #fff;
+  color: #ff5d01;
+  font-family: Poppins;
+  font-size: 30px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  margin: 5rem 2rem 0rem 2rem;
+}
+
+.questions_created {
+  width: 295px;
+  height: 145px;
+  flex-shrink: 0;
+  border-radius: 10px;
+  background: #fff;
+  color: #60b84b;
+  font-family: Poppins;
+  font-size: 30px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  margin: 5rem 2rem 0rem 2rem;
+}
+
+.total_impressions {
+  width: 295px;
+  height: 145px;
+  flex-shrink: 0;
+  border-radius: 10px;
+  background: #fff;
+  color: #5076ff;
+  font-family: Poppins;
+  font-size: 30px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  margin: 5rem 2rem 0rem 2rem;
+} */
+
+.container {
+  width: 100%;
+  height: 100vh;
+  max-width: 1200px; /* Set a maximum width for larger screens */
+  margin: 0 auto; /* Center the container */
+  background: #ededed;
+}
+
+.cards {
+  display: flex;
+  flex-wrap: wrap; /* Allow cards to wrap to the next line on smaller screens */
+  justify-content: space-around; /* Add space between cards */
+}
+
+.quiz_created,
+.questions_created,
+.total_impressions {
+  width: calc(
+    33.33% - 4rem
+  ); /* Set the width of each card to roughly one-third of the container */
+  max-width: 295px; /* Set a maximum width for each card */
+  height: 145px;
+  flex-shrink: 0;
+  border-radius: 10px;
+  background: #fff;
+  font-family: Poppins;
+  font-size: 30px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  margin: 2rem; /* Adjust margin for better spacing */
+}
+
+.quiz_created{
+    color: #ff5d01;
+}
+.questions_created{
+    color: #60b84b;
+}
+.total_impressions{
+    color: #5076ff;
+}

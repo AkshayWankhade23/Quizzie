@@ -1,0 +1,126 @@
+/* .container {
+  display: flex;
+}
+
+.right_container {
+  width: 20vw;
+  height: 100vh;
+  flex-shrink: 0;
+  background: #fff;
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+  text-align: center;
+}
+
+h3 {
+  width: 131px;
+  height: 70px;
+  color: #474444;
+  font-family: Jomhuria;
+  font-size: 50px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  margin: 2.3rem;
+}
+
+.button {
+  width: 176px;
+  height: 38px;
+  flex-shrink: 0;
+  border-radius: 10px;
+  background: #fff;
+  cursor: pointer;
+  border: none;
+  margin-top: 50px;
+}
+.button.active {
+  font-size: 16px;
+  box-shadow: 0px 0px 14px 0px rgba(0, 0, 0, 0.12);
+}
+
+.line {
+  width: 144px;
+  height: 2px;
+  flex-shrink: 0;
+  stroke-width: 10px;
+  background: #000;
+  margin: 15rem 0rem 0rem 5rem;
+}
+
+.logout_btn {
+  margin-top: 2rem;
+  color: #474444;
+  font-family: Poppins;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  text-transform: uppercase;
+  border: none;
+  background: #fff;
+} */
+
+.container {
+  display: flex;
+  height: 100vh;
+}
+
+.right_container {
+  width: 20vw;
+  flex-shrink: 0;
+  background: #fff;
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+  text-align: center;
+  padding: 20px; /* Add padding for better spacing on smaller screens */
+}
+
+h3 {
+  width: 100%; /* Make h3 take up full width */
+  height: 70px;
+  color: #474444;
+  font-family: Jomhuria;
+  font-size: 50px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  margin: 2.3rem 0; /* Adjust margin for better spacing */
+}
+
+.button {
+  width: 176px;
+  height: 38px;
+  flex-shrink: 0;
+  border-radius: 10px;
+  background: #fff;
+  cursor: pointer;
+  border: none;
+  margin-top: 50px;
+}
+.button.active {
+  font-size: 16px;
+  box-shadow: 0px 0px 14px 0px rgba(0, 0, 0, 0.12);
+}
+
+.line {
+  width: 100%; /* Make the line take up full width */
+  height: 2px;
+  flex-shrink: 0;
+  stroke-width: 10px;
+  background: #000;
+  margin: 1.5rem 0; /* Adjust margin for better spacing */
+}
+
+.logout_btn {
+  margin-top: 2rem;
+  color: #474444;
+  font-family: Poppins;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  text-transform: uppercase;
+  border: none;
+  background: #fff;
+  cursor: pointer;
+}
+
