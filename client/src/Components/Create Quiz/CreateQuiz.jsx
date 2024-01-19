@@ -19,11 +19,10 @@ const CreateQuiz = ({ onClose, onSave }) => {
   });
 
   const [currentStep, setCurrentStep] = useState(1);
-  const [ellipseCount, setEllipseCount] = useState(1);
+  const [selectedEllipseIndex, setSelectedEllipseIndex] = useState(0);
 
   const handleAddEllipse = () => {
-    if (ellipseCount < 5) {
-      setEllipseCount((prevCount) => prevCount + 1);
+    if (formData.questions.length < 5) {
       setFormData((prevFormData) => ({
         ...prevFormData,
         questions: [
@@ -31,29 +30,33 @@ const CreateQuiz = ({ onClose, onSave }) => {
           {
             questionText: '',
             optionsType: 'Text',
-            options: [''],
+            options: ['', ''],
             timer: 'OFF',
           },
         ],
       }));
+      setSelectedEllipseIndex(formData.questions.length);
     }
   };
 
   const handleDeleteEllipse = (index) => {
-    if (ellipseCount > 1) {
-      setEllipseCount((prevCount) => prevCount - 1);
-      setFormData((prevFormData) => ({
-        ...prevFormData,
-        questions: prevFormData.questions.filter((_, i) => i !== index),
-      }));
+    if (formData.questions.length > 1) {
+      setFormData((prevFormData) => {
+        const updatedQuestions = [...prevFormData.questions];
+        updatedQuestions.splice(index, 1);
+        return { ...prevFormData, questions: updatedQuestions };
+      });
+      setSelectedEllipseIndex((prevIndex) =>
+        Math.min(index, formData.questions.length - 2)
+      );
     }
   };
 
-  const handleChange = (e, ellipseIndex) => {
+  const handleChange = (e, ellipseIndex, fieldName) => {
     const { name, value } = e.target;
 
     if (name.startsWith('questions')) {
-      const [fieldName, index, subField] = name.split('.');
+      const [_, index, subField] = name.split('.');
       setFormData((prevFormData) => {
         const updatedQuestions = [...prevFormData.questions];
         const updatedQuestion = { ...updatedQuestions[index] };
@@ -67,6 +70,23 @@ const CreateQuiz = ({ onClose, onSave }) => {
         [name]: value,
       }));
     }
+  };
+
+  const handleDeleteOption = (ellipseIndex, optionIndex) => {
+    setFormData((prevFormData) => {
+      const updatedQuestions = [...prevFormData.questions];
+      const updatedOptions = [...updatedQuestions[ellipseIndex].options];
+
+      if (updatedOptions.length > 2) {
+        updatedOptions.splice(optionIndex, 1);
+        updatedQuestions[ellipseIndex] = {
+          ...updatedQuestions[ellipseIndex],
+          options: updatedOptions,
+        };
+      }
+
+      return { ...prevFormData, questions: updatedQuestions };
+    });
   };
 
   const handleChangeOption = (e, ellipseIndex, optionIndex) => {
@@ -84,38 +104,32 @@ const CreateQuiz = ({ onClose, onSave }) => {
   };
 
   const handleAddOption = (ellipseIndex) => {
-    setFormData((prevFormData) => {
-      const updatedQuestions = [...prevFormData.questions];
-      updatedQuestions[ellipseIndex] = {
-        ...updatedQuestions[ellipseIndex],
-        options: [...updatedQuestions[ellipseIndex].options, ''],
-      };
-      return { ...prevFormData, questions: updatedQuestions };
-    });
+    if (ellipseIndex < formData.questions.length) {
+      setFormData((prevFormData) => {
+        const updatedQuestions = [...prevFormData.questions];
+        const updatedOptions = [...updatedQuestions[ellipseIndex].options];
+
+        if (updatedOptions.length < 4) {
+          updatedQuestions[ellipseIndex] = {
+            ...updatedQuestions[ellipseIndex],
+            options: [...updatedOptions, ''],
+          };
+        }
+
+        return { ...prevFormData, questions: updatedQuestions };
+      });
+    }
   };
 
   const handleContinue = () => {
     if (currentStep === 1 && (!formData.quizName || !formData.quizType)) {
       toast.error('Quiz name and type are required');
       return;
-    } else if (currentStep === 2) {
-      for (const question of formData.questions) {
-        if (
-          !question.questionText ||
-          !question.optionsType ||
-          !question.timer ||
-          question.options.length < 2
-        ) {
-          toast.error('All fields are required for each question');
-          return;
-        }
-      }
     }
 
     setCurrentStep((prevStep) => prevStep + 1);
   };
 
-  
   const handleCreateQuiz = async () => {
     try {
       if (
@@ -126,7 +140,7 @@ const CreateQuiz = ({ onClose, onSave }) => {
         toast.error('Quiz name, type, and at least one question are required');
         return;
       }
-  
+
       for (const question of formData.questions) {
         if (
           !question.questionText ||
@@ -139,7 +153,7 @@ const CreateQuiz = ({ onClose, onSave }) => {
           return;
         }
       }
-  
+
       const response = await axios.post(
         'http://localhost:4000/api/quiz/quizzes',
         {
@@ -155,9 +169,8 @@ const CreateQuiz = ({ onClose, onSave }) => {
           ),
         }
       );
-  
+
       if (response.status >= 200 && response.status < 300) {
-        const data = response.data;
         toast.success('Quiz Created Successfully!');
         onSave();
       } else {
@@ -168,7 +181,6 @@ const CreateQuiz = ({ onClose, onSave }) => {
       toast.error('Failed to save quiz');
     }
   };
-  
 
   const renderStep = () => {
     switch (currentStep) {
@@ -230,97 +242,152 @@ const CreateQuiz = ({ onClose, onSave }) => {
                   )}
                 </div>
               ))}
-              {ellipseCount < 5 && (
+              {formData.questions.length < 5 && (
                 <div>
                   <button onClick={handleAddEllipse}>+</button>
                 </div>
               )}
             </div>
 
-            {formData.questions.map((question, ellipseIndex) => (
-              <div key={ellipseIndex}>
+            {selectedEllipseIndex !== null && (
+              <div key={selectedEllipseIndex}>
                 <div>
                   <input
                     type="text"
-                    value={question.questionText}
-                    placeholder={`Question ${ellipseIndex + 1}`}
-                    onChange={(e) => handleChange(e, ellipseIndex)}
-                    name={`questions.${ellipseIndex}.questionText`}
+                    value={formData.questions[selectedEllipseIndex].questionText}
+                    placeholder={`Question ${selectedEllipseIndex + 1}`}
+                    onChange={(e) =>
+                      handleChange(e, selectedEllipseIndex, 'questionText')
+                    }
+                    name={`questions.${selectedEllipseIndex}.questionText`}
                   />
                 </div>
                 <div>
-                  <label>Option Type </label>
+                  <label className={style.label}>Option Type </label>
                   <input
                     type="radio"
-                    name={`optionsType_${ellipseIndex}`}
+                    name={`optionsType_${selectedEllipseIndex}`}
                     value="Text"
                     onChange={(e) =>
-                      handleChange(e, ellipseIndex, 'optionsType')
+                      handleChange(
+                        e,
+                        selectedEllipseIndex,
+                        'optionsType'
+                      )
                     }
                   />
                   <label>Text</label>
                   <input
                     type="radio"
-                    name={`optionsType_${ellipseIndex}`}
+                    name={`optionsType_${selectedEllipseIndex}`}
                     value="Image URL"
                     onChange={(e) =>
-                      handleChange(e, ellipseIndex, 'optionsType')
+                      handleChange(
+                        e,
+                        selectedEllipseIndex,
+                        'optionsType'
+                      )
                     }
                   />
                   <label>Image URL</label>
                   <input
                     type="radio"
-                    name={`optionsType_${ellipseIndex}`}
+                    name={`optionsType_${selectedEllipseIndex}`}
                     value="Text & Image URL"
                     onChange={(e) =>
-                      handleChange(e, ellipseIndex, 'optionsType')
+                      handleChange(
+                        e,
+                        selectedEllipseIndex,
+                        'optionsType'
+                      )
                     }
                   />
                   <label>Text & Image URL</label>
                 </div>
-                <div>
-                  {question.options.map((option, optionIndex) => (
-                    <input
-                      key={optionIndex}
-                      type="text"
-                      value={option}
-                      placeholder={`Option ${optionIndex + 1}`}
-                      onChange={(e) =>
-                        handleChangeOption(e, ellipseIndex, optionIndex)
-                      }
-                      name={`questions.${ellipseIndex}.options.${optionIndex}`}
-                    />
-                  ))}
-                  <button onClick={() => handleAddOption(ellipseIndex)}>
-                    Add Option
-                  </button>
-                </div>
-                <div>
-                  <label>Timer</label>
+                {formData.questions[selectedEllipseIndex].options.map(
+                  (option, optionIndex) => (
+                    <div key={optionIndex}>
+                      <input
+                        type="text"
+                        value={option}
+                        placeholder={`Option ${optionIndex + 1}`}
+                        onChange={(e) =>
+                          handleChangeOption(
+                            e,
+                            selectedEllipseIndex,
+                            optionIndex
+                          )
+                        }
+                        name={`questions.${selectedEllipseIndex}.options.${optionIndex}`}
+                      />
+                      {optionIndex >= 2 && (
+                        <button
+                          onClick={() =>
+                            handleDeleteOption(
+                              selectedEllipseIndex,
+                              optionIndex
+                            )
+                          }
+                        >
+                          Delete Option
+                        </button>
+                      )}
+                    </div>
+                  )
+                )}
+                {formData.questions[selectedEllipseIndex].options.length < 4 && (
+                  <div>
+                    <button
+                      onClick={() => handleAddOption(selectedEllipseIndex)}
+                    >
+                      Add Option
+                    </button>
+                  </div>
+                )}
+                <div className={style.timer_container}>
+                  <label className={style.label}>Timer</label>
                   <input
                     type="radio"
-                    name={`timer_${ellipseIndex}`}
+                    name={`timer_${selectedEllipseIndex}`}
                     value="OFF"
-                    onChange={(e) => handleChange(e, ellipseIndex, 'timer')}
+                    onChange={(e) =>
+                      handleChange(
+                        e,
+                        selectedEllipseIndex,
+                        'timer'
+                      )
+                    }
                   />
                   <label>OFF</label>
                   <input
                     type="radio"
-                    name={`timer_${ellipseIndex}`}
+                    name={`timer_${selectedEllipseIndex}`}
                     value="5sec"
-                    onChange={(e) => handleChange(e, ellipseIndex, 'timer')}
+                    onChange={(e) =>
+                      handleChange(
+                        e,
+                        selectedEllipseIndex,
+                        'timer'
+                      )
+                    }
                   />
                   <label>5 sec</label>
                   <input
                     type="radio"
-                    name={`timer_${ellipseIndex}`}
+                    name={`timer_${selectedEllipseIndex}`}
                     value="10sec"
-                    onChange={(e) => handleChange(e, ellipseIndex, 'timer')}
+                    onChange={(e) =>
+                      handleChange(
+                        e,
+                        selectedEllipseIndex,
+                        'timer'
+                      )
+                    }
                   />
                   <label>10 sec</label>
                 </div>
               </div>
-            ))}
+            )}
           </div>
         );
       default:
