@@ -1,19 +1,20 @@
-
-import React, { useState } from 'react';
-import axios from 'axios';
-import { toast } from 'react-hot-toast';
-import style from './Style.module.css';
+import React, { useState } from "react";
+import axios from "axios";
+import { toast } from "react-hot-toast";
+import style from "./Style.module.css";
+import QuizLink from './QuizLink';
 
 const CreateQuiz = ({ onClose, onSave }) => {
+  const [quizLink, setQuizLink] = useState("");
   const [formData, setFormData] = useState({
-    quizName: '',
-    quizType: 'Q&A',
+    quizName: "",
+    quizType: "Q&A",
     questions: [
       {
-        questionText: '',
-        optionsType: 'Text',
-        options: ['', ''],
-        timer: 'OFF',
+        questionText: "",
+        optionsType: "Text",
+        options: ["", ""],
+        timer: "OFF",
       },
     ],
   });
@@ -28,10 +29,10 @@ const CreateQuiz = ({ onClose, onSave }) => {
         questions: [
           ...prevFormData.questions,
           {
-            questionText: '',
-            optionsType: 'Text',
-            options: ['', ''],
-            timer: 'OFF',
+            questionText: "",
+            optionsType: "Text",
+            options: ["", ""],
+            timer: "OFF",
           },
         ],
       }));
@@ -55,8 +56,8 @@ const CreateQuiz = ({ onClose, onSave }) => {
   const handleChange = (e, ellipseIndex, fieldName) => {
     const { name, value } = e.target;
 
-    if (name.startsWith('questions')) {
-      const [_, index, subField] = name.split('.');
+    if (name.startsWith("questions")) {
+      const [_, index, subField] = name.split(".");
       setFormData((prevFormData) => {
         const updatedQuestions = [...prevFormData.questions];
         const updatedQuestion = { ...updatedQuestions[index] };
@@ -112,7 +113,7 @@ const CreateQuiz = ({ onClose, onSave }) => {
         if (updatedOptions.length < 4) {
           updatedQuestions[ellipseIndex] = {
             ...updatedQuestions[ellipseIndex],
-            options: [...updatedOptions, ''],
+            options: [...updatedOptions, ""],
           };
         }
 
@@ -123,7 +124,7 @@ const CreateQuiz = ({ onClose, onSave }) => {
 
   const handleContinue = () => {
     if (currentStep === 1 && (!formData.quizName || !formData.quizType)) {
-      toast.error('Quiz name and type are required');
+      toast.error("Quiz name and type are required");
       return;
     }
 
@@ -137,7 +138,7 @@ const CreateQuiz = ({ onClose, onSave }) => {
         !formData.quizType ||
         formData.questions.length === 0
       ) {
-        toast.error('Quiz name, type, and at least one question are required');
+        toast.error("Quiz name, type, and at least one question are required");
         return;
       }
 
@@ -149,13 +150,13 @@ const CreateQuiz = ({ onClose, onSave }) => {
           question.options.length < 2 ||
           question.options.some((option) => !option.trim())
         ) {
-          toast.error('All fields are required for each question');
+          toast.error("All fields are required for each question");
           return;
         }
       }
 
       const response = await axios.post(
-        'http://localhost:4000/api/quiz/quizzes',
+        "http://localhost:4000/api/quiz/quizzes",
         {
           name: formData.quizName,
           type: formData.quizType,
@@ -163,22 +164,28 @@ const CreateQuiz = ({ onClose, onSave }) => {
             ({ questionText, optionsType, options, timer }) => ({
               text: questionText,
               type: optionsType,
-              options: options.map((value) => ({ type: 'text', value })),
+              options: options.map((value) => ({ type: "text", value })),
               timer,
             })
           ),
         }
       );
+      console.log('API Response:', response);
 
       if (response.status >= 200 && response.status < 300) {
-        toast.success('Quiz Created Successfully!');
+        const quizId = response.data._id;;
+        const generatedLink = `http://localhost:4000/quiz-link/${quizId}`;
+        setQuizLink(generatedLink);
+        setCurrentStep((prevStep) => prevStep + 1);
+
+        toast.success("Quiz Created Successfully!");
         onSave();
       } else {
-        throw new Error('Failed to save quiz');
+        throw new Error("Failed to save quiz");
       }
     } catch (error) {
-      console.error('Error saving quiz:', error);
-      toast.error('Failed to save quiz');
+      console.error("Error saving quiz:", error);
+      toast.error("Failed to save quiz");
     }
   };
 
@@ -200,11 +207,11 @@ const CreateQuiz = ({ onClose, onSave }) => {
             <div className={style.quizTypeButtons}>
               <button
                 className={`${style.button} ${
-                  formData.quizType === 'Q&A' && style.selected
+                  formData.quizType === "Q&A" && style.selected
                 }`}
                 onClick={() =>
                   handleChange(
-                    { target: { name: 'quizType', value: 'Q&A' } },
+                    { target: { name: "quizType", value: "Q&A" } },
                     0
                   )
                 }
@@ -214,11 +221,11 @@ const CreateQuiz = ({ onClose, onSave }) => {
 
               <button
                 className={`${style.button} ${
-                  formData.quizType === 'Poll' && style.selected
+                  formData.quizType === "Poll" && style.selected
                 }`}
                 onClick={() =>
                   handleChange(
-                    { target: { name: 'quizType', value: 'Poll' } },
+                    { target: { name: "quizType", value: "Poll" } },
                     0
                   )
                 }
@@ -254,10 +261,12 @@ const CreateQuiz = ({ onClose, onSave }) => {
                 <div>
                   <input
                     type="text"
-                    value={formData.questions[selectedEllipseIndex].questionText}
+                    value={
+                      formData.questions[selectedEllipseIndex].questionText
+                    }
                     placeholder={`Question ${selectedEllipseIndex + 1}`}
                     onChange={(e) =>
-                      handleChange(e, selectedEllipseIndex, 'questionText')
+                      handleChange(e, selectedEllipseIndex, "questionText")
                     }
                     name={`questions.${selectedEllipseIndex}.questionText`}
                   />
@@ -269,11 +278,7 @@ const CreateQuiz = ({ onClose, onSave }) => {
                     name={`optionsType_${selectedEllipseIndex}`}
                     value="Text"
                     onChange={(e) =>
-                      handleChange(
-                        e,
-                        selectedEllipseIndex,
-                        'optionsType'
-                      )
+                      handleChange(e, selectedEllipseIndex, "optionsType")
                     }
                   />
                   <label>Text</label>
@@ -282,11 +287,7 @@ const CreateQuiz = ({ onClose, onSave }) => {
                     name={`optionsType_${selectedEllipseIndex}`}
                     value="Image URL"
                     onChange={(e) =>
-                      handleChange(
-                        e,
-                        selectedEllipseIndex,
-                        'optionsType'
-                      )
+                      handleChange(e, selectedEllipseIndex, "optionsType")
                     }
                   />
                   <label>Image URL</label>
@@ -295,11 +296,7 @@ const CreateQuiz = ({ onClose, onSave }) => {
                     name={`optionsType_${selectedEllipseIndex}`}
                     value="Text & Image URL"
                     onChange={(e) =>
-                      handleChange(
-                        e,
-                        selectedEllipseIndex,
-                        'optionsType'
-                      )
+                      handleChange(e, selectedEllipseIndex, "optionsType")
                     }
                   />
                   <label>Text & Image URL</label>
@@ -335,7 +332,8 @@ const CreateQuiz = ({ onClose, onSave }) => {
                     </div>
                   )
                 )}
-                {formData.questions[selectedEllipseIndex].options.length < 4 && (
+                {formData.questions[selectedEllipseIndex].options.length <
+                  4 && (
                   <div>
                     <button
                       onClick={() => handleAddOption(selectedEllipseIndex)}
@@ -351,11 +349,7 @@ const CreateQuiz = ({ onClose, onSave }) => {
                     name={`timer_${selectedEllipseIndex}`}
                     value="OFF"
                     onChange={(e) =>
-                      handleChange(
-                        e,
-                        selectedEllipseIndex,
-                        'timer'
-                      )
+                      handleChange(e, selectedEllipseIndex, "timer")
                     }
                   />
                   <label>OFF</label>
@@ -364,11 +358,7 @@ const CreateQuiz = ({ onClose, onSave }) => {
                     name={`timer_${selectedEllipseIndex}`}
                     value="5sec"
                     onChange={(e) =>
-                      handleChange(
-                        e,
-                        selectedEllipseIndex,
-                        'timer'
-                      )
+                      handleChange(e, selectedEllipseIndex, "timer")
                     }
                   />
                   <label>5 sec</label>
@@ -377,11 +367,7 @@ const CreateQuiz = ({ onClose, onSave }) => {
                     name={`timer_${selectedEllipseIndex}`}
                     value="10sec"
                     onChange={(e) =>
-                      handleChange(
-                        e,
-                        selectedEllipseIndex,
-                        'timer'
-                      )
+                      handleChange(e, selectedEllipseIndex, "timer")
                     }
                   />
                   <label>10 sec</label>
@@ -397,26 +383,31 @@ const CreateQuiz = ({ onClose, onSave }) => {
 
   return (
     <div className={style.overlay}>
-      <div className={style.popup}>
-        {renderStep()}
-
-        <div className={style.popupButtons}>
-          <button className={style.button} onClick={onClose}>
-            Cancel
-          </button>
-          {currentStep === 1 && (
-            <button className={style.button} onClick={handleContinue}>
-              Continue
+    <div className={style.popup}>
+      {currentStep === 3 ? (
+        <QuizLink onClose={onClose} quizLink={quizLink} />
+      ) : (
+        <>
+          {renderStep()}
+          <div className={style.popupButtons}>
+            <button className={style.button} onClick={onClose}>
+              Cancel
             </button>
-          )}
-          {currentStep === 2 && (
-            <button className={style.button} onClick={handleCreateQuiz}>
-              Create Quiz
-            </button>
-          )}
-        </div>
-      </div>
+            {currentStep === 1 && (
+              <button className={style.button} onClick={handleContinue}>
+                Continue
+              </button>
+            )}
+            {currentStep === 2 && (
+              <button className={style.button} onClick={handleCreateQuiz}>
+                Create Quiz
+              </button>
+            )}
+          </div>
+        </>
+      )}
     </div>
+  </div>
   );
 };
 
