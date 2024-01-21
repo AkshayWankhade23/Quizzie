@@ -57,7 +57,7 @@ const CreateQuiz = ({ onClose, onSave }) => {
     const { name, value } = e.target;
 
     if (name.startsWith("questions")) {
-      const [_, index, subField] = name.split(".");
+      const [, index, subField] = name.split(".");
       setFormData((prevFormData) => {
         const updatedQuestions = [...prevFormData.questions];
         const updatedQuestion = { ...updatedQuestions[index] };
@@ -170,11 +170,10 @@ const CreateQuiz = ({ onClose, onSave }) => {
           ),
         }
       );
-      console.log('API Response:', response);
 
       if (response.status >= 200 && response.status < 300) {
-        const quizId = response.data._id;;
-        const generatedLink = `http://localhost:4000/quiz-link/${quizId}`;
+        const quizId = response.data._id;
+        const generatedLink = `http://localhost:3000/quiz/${quizId}`;
         setQuizLink(generatedLink);
         setCurrentStep((prevStep) => prevStep + 1);
 
@@ -383,31 +382,31 @@ const CreateQuiz = ({ onClose, onSave }) => {
 
   return (
     <div className={style.overlay}>
-    <div className={style.popup}>
-      {currentStep === 3 ? (
-        <QuizLink onClose={onClose} quizLink={quizLink} />
-      ) : (
-        <>
-          {renderStep()}
-          <div className={style.popupButtons}>
-            <button className={style.button} onClick={onClose}>
-              Cancel
-            </button>
-            {currentStep === 1 && (
-              <button className={style.button} onClick={handleContinue}>
-                Continue
+      <div className={style.popup}>
+        {currentStep === 3 ? (
+          <QuizLink onClose={onClose} quizLink={quizLink} />
+        ) : (
+          <>
+            {renderStep()}
+            <div className={style.popupButtons}>
+              <button className={style.button} onClick={onClose}>
+                Cancel
               </button>
-            )}
-            {currentStep === 2 && (
-              <button className={style.button} onClick={handleCreateQuiz}>
-                Create Quiz
-              </button>
-            )}
-          </div>
-        </>
-      )}
+              {currentStep === 1 && (
+                <button className={style.button} onClick={handleContinue}>
+                  Continue
+                </button>
+              )}
+              {currentStep === 2 && (
+                <button className={style.button} onClick={handleCreateQuiz}>
+                  Create Quiz
+                </button>
+              )}
+            </div>
+          </>
+        )}
+      </div>
     </div>
-  </div>
   );
 };
 
